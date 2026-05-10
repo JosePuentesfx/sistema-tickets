@@ -20,7 +20,7 @@ async function seed() {
                 password: hashedPassword,
                 role: 'admin'
             });
-            console.log('✅ Admin user created successfully. Username: admin, Password: 123');
+            console.log('✅ Usuario administrador creado. Revisa el archivo README.md para las credenciales iniciales.');
         } else {
             console.log('⚠️ Admin user already exists.');
         }
