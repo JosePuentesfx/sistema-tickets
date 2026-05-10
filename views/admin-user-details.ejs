@@ -1,0 +1,134 @@
+<div class="max-w-4xl mx-auto">
+    <div class="mb-6 flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Perfil de Trabajador</h1>
+            <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Analíticas y rendimiento de <%= worker.name %>.</p>
+        </div>
+        <a href="/admin/users" class="text-sm font-medium text-primary-600 hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 transition-colors">
+            &larr; Volver a la Lista
+        </a>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-8">
+        <div class="flex items-center gap-6">
+            <div class="h-20 w-20 rounded-full bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center text-primary-700 dark:text-primary-300 text-3xl font-bold border border-primary-200 dark:border-primary-700/50">
+                <%= worker.name.charAt(0).toUpperCase() %>
+            </div>
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white"><%= worker.name %></h2>
+                <p class="text-gray-500 dark:text-gray-400">
+                    <%= worker.email %>
+                    <% if (worker.phone) { %>
+                        <span class="mx-2">&bull;</span>
+                        <a href="tel:<%= worker.phone %>" class="hover:underline hover:text-primary-600 dark:hover:text-primary-400">📞 <%= worker.phone %></a>
+                    <% } %>
+                </p>
+                <div class="mt-2 flex gap-2">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                        Rol: <%= worker.role.toUpperCase() %>
+                    </span>
+                    <% if (worker.role === 'tecnico') { %>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400">
+                            Depto: <%= worker.department || 'General' %>
+                        </span>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Analíticas de Trabajo</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <% if (worker.role === 'empleado') { %>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 flex items-center">
+                <div class="p-3 rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+                    <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                </div>
+                <div class="ml-4">
+                    <h2 class="text-sm font-medium text-gray-500 dark:text-gray-400">Tickets Reportados</h2>
+                    <p class="text-2xl font-semibold text-gray-900 dark:text-white"><%= stats.reported %></p>
+                </div>
+            </div>
+        <% } else if (worker.role === 'tecnico') { %>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 flex items-center">
+                <div class="p-3 rounded-full bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400">
+                    <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <div class="ml-4">
+                    <h2 class="text-sm font-medium text-gray-500 dark:text-gray-400">Tickets Asignados (Total)</h2>
+                    <p class="text-2xl font-semibold text-gray-900 dark:text-white"><%= stats.assigned %></p>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 flex items-center">
+                <div class="p-3 rounded-full bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400">
+                    <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <div class="ml-4">
+                    <h2 class="text-sm font-medium text-gray-500 dark:text-gray-400">Tickets Resueltos</h2>
+                    <p class="text-2xl font-semibold text-gray-900 dark:text-white"><%= stats.resolved %></p>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 flex items-center">
+                <div class="p-3 rounded-full bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">
+                    <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                </div>
+                <div class="ml-4">
+                    <h2 class="text-sm font-medium text-gray-500 dark:text-gray-400">Tasa de Resolución</h2>
+                    <p class="text-2xl font-semibold text-gray-900 dark:text-white">
+                        <%= stats.assigned > 0 ? Math.round((stats.resolved / stats.assigned) * 100) : 0 %>%
+                    </p>
+                </div>
+            </div>
+        <% } else { %>
+            <div class="col-span-3 text-center py-4 text-gray-500 dark:text-gray-400">
+                Las analíticas no aplican para Administradores.
+            </div>
+        <% } %>
+    </div>
+
+    <% if (worker.role !== 'admin') { %>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Últimos Tickets (Historial)</h3>
+        <div class="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <% if (recentTickets.length === 0) { %>
+                <div class="p-8 text-center text-gray-500 dark:text-gray-400">
+                    No hay tickets recientes para mostrar.
+                </div>
+            <% } else { %>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead class="bg-gray-50 dark:bg-gray-800/50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Asunto</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Estado</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                            <% recentTickets.forEach(ticket => { %>
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">#<%= ticket.id %></td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900 dark:text-white truncate max-w-xs">
+                                            <a href="/tickets/<%= ticket.id %>" class="hover:text-primary-600 hover:underline"><%= ticket.title %></a>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <% if (ticket.status === 'resuelto') { %>
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">Resuelto</span>
+                                        <% } else { %>
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">Pendiente</span>
+                                        <% } %>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                        <%= new Date(ticket.createdAt).toLocaleDateString('es-ES') %>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } %>
+        </div>
+    <% } %>
+</div>

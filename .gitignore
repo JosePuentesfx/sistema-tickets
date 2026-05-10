@@ -1,0 +1,43 @@
+# Dependencias
+node_modules/
+
+# Variables de entorno (credenciales de BD, secretos)
+.env
+.env.local
+.env.*.local
+
+# Sesión de WhatsApp Bot (contiene datos de autenticación del celular)
+.wwebjs_auth/
+.wwebjs_cache/
+
+# Archivos de sesión de usuario
+sessions/
+
+# Logs del sistema (pueden contener información sensible)
+logs/
+*.log
+npm-debug.log*
+
+# Base de datos SQLite (si se usa localmente, contiene datos reales)
+*.sqlite
+*.sqlite3
+*.db
+
+# Archivos del sistema operativo (Windows/Mac/Linux)
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Archivos de editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archivos de construcción
+dist/
+build/
+
+# Archivos temporales
+tmp/
+temp/

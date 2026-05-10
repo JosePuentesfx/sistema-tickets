@@ -1,0 +1,179 @@
+<div class="max-w-2xl mx-auto">
+    <div class="mb-6 flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Agregar Trabajador</h1>
+            <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Crea una nueva cuenta de usuario para el sistema.</p>
+        </div>
+        <a href="/admin/users" class="text-sm font-medium text-primary-600 hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 transition-colors">
+            &larr; Volver a la Lista
+        </a>
+    </div>
+
+    <% if (locals.error) { %>
+        <div class="bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500 p-4 mb-6 rounded-r-md">
+            <p class="text-sm text-red-700 dark:text-red-400"><%= error %></p>
+        </div>
+    <% } %>
+
+    <div class="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+        <form action="/admin/users/create" method="POST" class="space-y-6" id="createUserForm" novalidate>
+
+            <!-- Nombre -->
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre Completo</label>
+                <input type="text" name="name" id="name" required autocomplete="off"
+                    class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-2 border"
+                    placeholder="Ej. Juan Pérez García">
+                <p class="mt-1 text-xs text-red-500 hidden" id="name-error"></p>
+            </div>
+
+            <!-- Teléfono con prefijo +52 -->
+            <div>
+                <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Teléfono (Opcional)</label>
+                <div class="mt-1 flex rounded-md shadow-sm">
+                    <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-600 text-gray-500 dark:text-gray-300 sm:text-sm font-medium">
+                        +52
+                    </span>
+                    <input type="tel" name="phone_local" id="phone_local" autocomplete="off"
+                        class="flex-1 block w-full rounded-none rounded-r-md border-gray-300 dark:border-gray-600 focus:border-primary-500 focus:ring-primary-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-2 border"
+                        placeholder="1234567890 (10 dígitos)">
+                    <!-- Hidden field that stores the full number -->
+                    <input type="hidden" name="phone" id="phone">
+                </div>
+                <p class="mt-1 text-xs text-gray-400">Solo los 10 dígitos del número local (sin lada de país). El +52 se agrega solo.</p>
+                <p class="mt-1 text-xs text-red-500 hidden" id="phone-error"></p>
+            </div>
+
+            <!-- Usuario -->
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Usuario o Correo</label>
+                <input type="text" name="email" id="email" required autocomplete="off"
+                    class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-2 border"
+                    placeholder="usuario o correo@empresa.com">
+                <p class="mt-1 text-xs text-red-500 hidden" id="email-error"></p>
+            </div>
+
+            <!-- Contraseña -->
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Contraseña</label>
+                <input type="password" name="password" id="password" required autocomplete="new-password"
+                    class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-2 border"
+                    placeholder="Mínimo 6 caracteres">
+                <p class="mt-1 text-xs text-red-500 hidden" id="password-error"></p>
+            </div>
+
+            <!-- Rol -->
+            <div>
+                <label for="role" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Rol</label>
+                <select name="role" id="role" onchange="document.getElementById('dept-container').style.display = (this.value === 'tecnico') ? 'block' : 'none';"
+                    class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-2 border">
+                    <option value="empleado">Empleado General (Crea Tickets)</option>
+                    <option value="tecnico">Ingeniero / Técnico (Resuelve Tickets)</option>
+                    <option value="admin">Administrador (Gestión de Personal)</option>
+                </select>
+            </div>
+
+            <!-- Departamento (solo técnicos) -->
+            <div id="dept-container" style="display: none;">
+                <label for="department" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Departamento (Área de Trabajo)</label>
+                <select name="department" id="department"
+                    class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-2 border">
+                    <option value="General">General (Ve todos los tickets)</option>
+                    <option value="Hardware">Hardware</option>
+                    <option value="Software">Software</option>
+                    <option value="Redes">Redes e Internet</option>
+                    <option value="Accesos">Accesos (Cuentas)</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+
+            <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                <button type="submit" class="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                    Registrar Trabajador
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Detects if a string has too many consecutive repeated characters (e.g. "aaaaaaa")
+    function hasRepeatedChars(str, maxRepeat = 4) {
+        return /(.)\1{3,}/.test(str);
+    }
+
+    // Checks that the name only has letters (including accents) and spaces
+    function isValidName(name) {
+        if (name.trim().length < 3) return 'El nombre debe tener al menos 3 caracteres.';
+        if (name.trim().length > 60) return 'El nombre no puede ser tan largo (máx. 60 caracteres).';
+        if (/\d/.test(name)) return 'El nombre no puede contener números.';
+        if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/.test(name)) return 'El nombre solo puede contener letras y espacios.';
+        if (hasRepeatedChars(name)) return 'El nombre no puede tener tantas letras repetidas seguidas.';
+        return null;
+    }
+
+    function isValidPhone(phone) {
+        if (phone === '') return null; // optional
+        if (!/^\d{10}$/.test(phone)) return 'El teléfono debe tener exactamente 10 dígitos.';
+        return null;
+    }
+
+    function isValidEmail(email) {
+        if (email.trim().length < 3) return 'El usuario/correo debe tener al menos 3 caracteres.';
+        if (hasRepeatedChars(email)) return 'El usuario tiene demasiados caracteres repetidos.';
+        return null;
+    }
+
+    function isValidPassword(pass) {
+        if (pass.length < 6) return 'La contraseña debe tener al menos 6 caracteres.';
+        if (hasRepeatedChars(pass, 5)) return 'La contraseña no puede tener tantos caracteres repetidos.';
+        return null;
+    }
+
+    function showError(id, msg) {
+        const el = document.getElementById(id);
+        if (msg) {
+            el.textContent = msg;
+            el.classList.remove('hidden');
+            el.previousElementSibling.classList.add('border-red-500');
+        } else {
+            el.classList.add('hidden');
+            el.previousElementSibling.classList.remove('border-red-500');
+        }
+    }
+
+    // Build phone field before submitting
+    document.getElementById('createUserForm').addEventListener('submit', function(e) {
+        let hasError = false;
+
+        const name = document.getElementById('name').value;
+        const nameErr = isValidName(name);
+        if (nameErr) { showError('name-error', nameErr); hasError = true; }
+        else showError('name-error', null);
+
+        const phoneLocal = document.getElementById('phone_local').value.trim().replace(/\s/g, '');
+        const phoneErr = isValidPhone(phoneLocal);
+        if (phoneErr) { showError('phone-error', phoneErr); hasError = true; }
+        else {
+            showError('phone-error', null);
+            // Compose full number only if provided
+            if (phoneLocal !== '') {
+                document.getElementById('phone').value = '52' + phoneLocal;
+            } else {
+                document.getElementById('phone').value = '';
+            }
+        }
+
+        const email = document.getElementById('email').value;
+        const emailErr = isValidEmail(email);
+        if (emailErr) { showError('email-error', emailErr); hasError = true; }
+        else showError('email-error', null);
+
+        const password = document.getElementById('password').value;
+        const passErr = isValidPassword(password);
+        if (passErr) { showError('password-error', passErr); hasError = true; }
+        else showError('password-error', null);
+
+        if (hasError) e.preventDefault();
+    });
+</script>

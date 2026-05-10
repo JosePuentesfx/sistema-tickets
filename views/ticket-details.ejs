@@ -1,0 +1,228 @@
+
+
+<div class="mb-6 flex items-center justify-between">
+    <a href="/tickets/dashboard" class="text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-colors">
+        &larr; Volver al Dashboard
+    </a>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Ticket Details Column -->
+    <div class="lg:col-span-2 space-y-6">
+        <!-- Main Ticket Header -->
+        <div class="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white"><%= ticket.title %></h2>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Reportado por <%= ticket.user ? ticket.user.name : 'Usuario Desconocido' %> el <%= new Date(ticket.createdAt).toLocaleString('es-ES') %></p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <!-- Status Badge -->
+                    <% if (ticket.status === 'resuelto') { %>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800">
+                            <svg class="-ml-1 mr-1.5 h-4 w-4 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                            Resuelto
+                        </span>
+                    <% } else { %>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800">
+                            <svg class="-ml-1 mr-1.5 h-4 w-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
+                            Pendiente
+                        </span>
+                    <% } %>
+                    <!-- Priority Badge -->
+                    <% if (ticket.priority === 'alta') { %>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 border border-red-200 dark:border-red-800">Prioridad Alta</span>
+                    <% } else if (ticket.priority === 'media') { %>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 border border-blue-200 dark:border-blue-800">Prioridad Media</span>
+                    <% } else { %>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600">Prioridad Baja</span>
+                    <% } %>
+                    <!-- Category Badge -->
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400 border border-purple-200 dark:border-purple-800">
+                        <%= ticket.category || 'Otro' %>
+                    </span>
+                </div>
+            </div>
+            <div class="px-6 py-5 prose prose-sm sm:prose dark:prose-invert max-w-none">
+                <p class="whitespace-pre-wrap text-gray-700 dark:text-gray-300"><%= ticket.description %></p>
+            </div>
+        </div>
+
+        <!-- Comments Section -->
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white pt-4 border-t border-gray-200 dark:border-gray-700">Comentarios e Historial</h3>
+        
+        <div class="space-y-4" id="comments-container">
+            <% if (ticket.comments && ticket.comments.length > 0) { %>
+                <% ticket.comments.forEach(comment => { %>
+                    <div class="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 p-5 flex gap-4">
+                        <div class="flex-shrink-0">
+                            <div class="h-10 w-10 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center text-primary-700 dark:text-primary-300 font-bold border border-primary-200 dark:border-primary-700">
+                                <%= comment.user ? comment.user.name.charAt(0).toUpperCase() : 'U' %>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-sm font-bold text-gray-900 dark:text-white">
+                                    <%= comment.user ? comment.user.name : 'Usuario Desconocido' %>
+                                    <% if (comment.user && comment.user.role === 'tecnico') { %>
+                                        <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400">Soporte IT</span>
+                                    <% } %>
+                                </h4>
+                                <span class="text-xs text-gray-500 dark:text-gray-400"><%= new Date(comment.createdAt).toLocaleString('es-ES') %></span>
+                            </div>
+                            <div class="mt-2 text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap"><%= comment.content %></div>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <div class="text-center py-8 text-gray-500 dark:text-gray-400 text-sm border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl">
+                    Aún no hay comentarios en este ticket.
+                </div>
+            <% } %>
+        </div>
+
+        <!-- Add Comment Form -->
+        <% if (ticket.status !== 'resuelto' || user.role === 'tecnico') { %>
+            <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
+                <form action="/comments/<%= ticket.id %>" method="POST">
+                    <label for="content" class="sr-only">Agregar un comentario</label>
+                    <textarea id="content" name="content" rows="3" required class="block w-full py-2 px-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors" placeholder="Escribe un comentario..."></textarea>
+                    <div class="mt-3 flex items-center justify-end">
+                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                            Comentar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        <% } %>
+    </div>
+
+    <!-- Sidebar Admin Actions -->
+    <div class="space-y-6">
+        <% if (user.role === 'tecnico') { %>
+            <div class="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+                <h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-4">Acciones Administrativas</h3>
+                
+                <% if (!ticket.assignedTo) { %>
+                    <form action="/tickets/<%= ticket.id %>/assign" method="POST" class="mb-4">
+                        <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                            Tomar este Ticket (Asignarme)
+                        </button>
+                    </form>
+                <% } else if (ticket.assignedTo === user.id) { %>
+                    <form action="/tickets/<%= ticket.id %>/status" method="POST" class="space-y-4">
+                        <div>
+                            <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Cambiar Estado</label>
+                            <select id="status" name="status" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                <option value="pendiente" <%= ticket.status === 'pendiente' ? 'selected' : '' %>>Pendiente</option>
+                                <option value="resuelto" <%= ticket.status === 'resuelto' ? 'selected' : '' %>>Resuelto</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-900 dark:bg-gray-600 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors">
+                            Actualizar Estado
+                        </button>
+                    </form>
+                <% } else { %>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-md border border-gray-200 dark:border-gray-600">
+                        Este ticket está asignado a otro técnico. No puedes cambiar su estado.
+                    </div>
+                <% } %>
+            </div>
+        <% } %>
+
+        <div class="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+            <h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-4">Detalles</h3>
+            <dl class="space-y-4 text-sm text-gray-600 dark:text-gray-400">
+                <div>
+                    <dt class="font-medium text-gray-900 dark:text-white">Ticket ID</dt>
+                    <dd>#<%= ticket.id %></dd>
+                </div>
+                <div>
+                    <dt class="font-medium text-gray-900 dark:text-white">Asignado A</dt>
+                    <dd id="assignee-label"><%= ticket.assignee ? ticket.assignee.name : 'Sin asignar' %></dd>
+                </div>
+                <div>
+                    <dt class="font-medium text-gray-900 dark:text-white">Creado</dt>
+                    <dd><%= new Date(ticket.createdAt).toLocaleString('es-ES') %></dd>
+                </div>
+                <div>
+                    <dt class="font-medium text-gray-900 dark:text-white">Última actualización</dt>
+                    <dd><%= new Date(ticket.updatedAt).toLocaleString('es-ES') %></dd>
+                </div>
+            </dl>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Auto-update comments every 5 seconds
+    setInterval(async () => {
+        try {
+            const response = await fetch('/tickets/api/<%= ticket.id %>/comments');
+            if (!response.ok) return;
+            const data = await response.json();
+            
+            // Update Assignee
+            const assigneeLabel = document.getElementById('assignee-label');
+            if (assigneeLabel && data.assignee) {
+                assigneeLabel.textContent = data.assignee;
+            }
+
+            // Update Status Badge if changed (simple reload for badge change for robustness, or manual update)
+            // But we will do it smartly if we can, or just let comments update.
+            // Actually it's easier to reload page if status changes so the whole UI reflects it, 
+            // but the user wanted auto-update. Let's just update a data attribute and reload if changed
+            if (window.currentTicketStatus && window.currentTicketStatus !== data.status) {
+                window.location.reload();
+            }
+            window.currentTicketStatus = data.status;
+
+            const container = document.getElementById('comments-container');
+            if (!container || !data.comments) return;
+
+            if (data.comments.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-gray-500 dark:text-gray-400 text-sm border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl">
+                        Aún no hay comentarios en este ticket.
+                    </div>
+                `;
+                return;
+            }
+
+            // Only update if number of comments changed (simple check)
+            const currentCount = container.querySelectorAll('.bg-white').length;
+            if (currentCount === data.comments.length) return;
+
+            let newHTML = '';
+            data.comments.forEach(comment => {
+                const userName = comment.user ? comment.user.name : 'Usuario Desconocido';
+                const initial = userName.charAt(0).toUpperCase();
+                const isTecnico = comment.user && comment.user.role === 'tecnico';
+                const dateStr = new Date(comment.createdAt).toLocaleString('es-ES');
+
+                newHTML += `
+                    <div class="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 p-5 flex gap-4">
+                        <div class="flex-shrink-0">
+                            <div class="h-10 w-10 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center text-primary-700 dark:text-primary-300 font-bold border border-primary-200 dark:border-primary-700">
+                                ${initial}
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-sm font-bold text-gray-900 dark:text-white">
+                                    ${userName}
+                                    ${isTecnico ? '<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400">Soporte IT</span>' : ''}
+                                </h4>
+                                <span class="text-xs text-gray-500 dark:text-gray-400">${dateStr}</span>
+                            </div>
+                            <div class="mt-2 text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">${comment.content}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = newHTML;
+        } catch (error) {
+            console.error('Error fetching comments:', error);
+        }
+    }, 5000);
+</script>

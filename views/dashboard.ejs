@@ -1,0 +1,212 @@
+
+
+<div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Panel de Tickets</h1>
+        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Gestiona y da seguimiento a los incidentes de soporte técnico.</p>
+    </div>
+    <div class="flex gap-2">
+        <a href="/tickets/archived" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+            Tickets Archivados
+        </a>
+        <% if (user.role === 'empleado') { %>
+            <a href="/tickets/create" class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                Nuevo Ticket
+            </a>
+        <% } %>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 flex items-center">
+        <div class="p-3 rounded-full bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400">
+            <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        </div>
+        <div class="ml-4">
+            <h2 class="text-sm font-medium text-gray-500 dark:text-gray-400">Tickets Abiertos</h2>
+            <p class="text-2xl font-semibold text-gray-900 dark:text-white"><%= stats ? stats.open : 0 %></p>
+        </div>
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 flex items-center">
+        <div class="p-3 rounded-full bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400">
+            <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        </div>
+        <div class="ml-4">
+            <h2 class="text-sm font-medium text-gray-500 dark:text-gray-400">Tickets Resueltos</h2>
+            <p class="text-2xl font-semibold text-gray-900 dark:text-white"><%= stats ? stats.resolved : 0 %></p>
+        </div>
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 flex items-center">
+        <div class="p-3 rounded-full bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400">
+            <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+        </div>
+        <div class="ml-4">
+            <h2 class="text-sm font-medium text-gray-500 dark:text-gray-400">Prioridad Alta</h2>
+            <p class="text-2xl font-semibold text-gray-900 dark:text-white"><%= stats ? stats.highPriority : 0 %></p>
+        </div>
+    </div>
+</div>
+
+<div class="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <% if (tickets.length === 0) { %>
+        <div class="p-12 text-center">
+            <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">No hay tickets</h3>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Comienza creando un nuevo ticket de soporte.</p>
+        </div>
+    <% } else { %>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-gray-50 dark:bg-gray-800/50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">ID</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Asunto</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Categoría</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Estado</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Prioridad</th>
+                        <% if (user.role === 'tecnico' || user.role === 'admin') { %>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Empleado</th>
+                        <% } %>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Asignado A</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Fecha</th>
+                        <th scope="col" class="relative px-6 py-3">
+                            <span class="sr-only">Ver</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    <% tickets.forEach(ticket => { %>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">#<%= ticket.id %></td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900 dark:text-white truncate max-w-xs"><%= ticket.title %></div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                <%= ticket.category || 'Otro' %>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <% if (ticket.status === 'resuelto') { %>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800">
+                                        <span class="w-1.5 h-1.5 mr-1.5 bg-green-500 rounded-full"></span> Resuelto
+                                    </span>
+                                <% } else { %>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800">
+                                        <span class="w-1.5 h-1.5 mr-1.5 bg-yellow-500 rounded-full"></span> Pendiente
+                                    </span>
+                                <% } %>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <% if (ticket.priority === 'alta') { %>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">Alta</span>
+                                <% } else if (ticket.priority === 'media') { %>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">Media</span>
+                                <% } else { %>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">Baja</span>
+                                <% } %>
+                            </td>
+                            <% if (user.role === 'tecnico' || user.role === 'admin') { %>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                    <%= ticket.user ? ticket.user.name : 'N/A' %>
+                                </td>
+                            <% } %>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                <%= ticket.assignee ? ticket.assignee.name : 'Sin asignar' %>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                <%= new Date(ticket.createdAt).toLocaleDateString('es-ES') %>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <a href="/tickets/<%= ticket.id %>" class="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300">Ver detalles &rarr;</a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } %>
+</div>
+
+<script>
+    // Auto-update dashboard every 5 seconds
+    setInterval(async () => {
+        try {
+            const response = await fetch('/tickets/api/dashboard/data');
+            if (!response.ok) return;
+            const data = await response.json();
+            
+            // Update KPIs
+            const statElements = document.querySelectorAll('.text-2xl.font-semibold');
+            if (statElements.length >= 3) {
+                statElements[0].textContent = data.stats.open;
+                statElements[1].textContent = data.stats.resolved;
+                statElements[2].textContent = data.stats.highPriority;
+            }
+
+            // Update Table Body
+            const tbody = document.querySelector('tbody');
+            if (tbody && data.tickets) {
+                if (data.tickets.length === 0) {
+                    // Optional: handle empty state dynamic switch
+                    return;
+                }
+                let newHTML = '';
+                data.tickets.forEach(ticket => {
+                    let statusBadge = '';
+                    if (ticket.status === 'resuelto') {
+                        statusBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800">
+                                            <span class="w-1.5 h-1.5 mr-1.5 bg-green-500 rounded-full"></span> Resuelto
+                                        </span>`;
+                    } else {
+                        statusBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800">
+                                            <span class="w-1.5 h-1.5 mr-1.5 bg-yellow-500 rounded-full"></span> Pendiente
+                                        </span>`;
+                    }
+
+                    let priorityBadge = '';
+                    if (ticket.priority === 'alta') {
+                        priorityBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">Alta</span>`;
+                    } else if (ticket.priority === 'media') {
+                        priorityBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">Media</span>`;
+                    } else {
+                        priorityBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">Baja</span>`;
+                    }
+
+                    let userCol = '';
+                    if (data.userRole === 'tecnico' || data.userRole === 'admin') {
+                        userCol = `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${ticket.user ? ticket.user.name : 'N/A'}</td>`;
+                    }
+
+                    const assigneeName = ticket.assignee ? ticket.assignee.name : 'Sin asignar';
+                    const dateStr = new Date(ticket.createdAt).toLocaleDateString('es-ES');
+
+                    newHTML += `
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">#${ticket.id}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900 dark:text-white truncate max-w-xs">${ticket.title}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                ${ticket.category || 'Otro'}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">${statusBadge}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">${priorityBadge}</td>
+                            ${userCol}
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${assigneeName}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${dateStr}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <a href="/tickets/${ticket.id}" class="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300">Ver detalles &rarr;</a>
+                            </td>
+                        </tr>
+                    `;
+                });
+                // Update table body only if content changed (simple check)
+                if (tbody.innerHTML !== newHTML) {
+                    tbody.innerHTML = newHTML;
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching dashboard data:', error);
+        }
+    }, 5000);
+</script>
