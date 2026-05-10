@@ -92,4 +92,14 @@ Al iniciar el servidor por primera vez, aparecerá un **Código QR** en la conso
 
 ## 📄 Licencia
 
-MIT — Libre para usar, modificar y distribuir.
+**© 2026 José Puentes — Todos los derechos reservados bajo CC BY-NC-ND 4.0**
+
+Este proyecto está publicado con fines de **portafolio y referencia educativa**.  
+Está protegido bajo la licencia [Creative Commons BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/).
+
+✅ Puedes **ver** el código y aprender de él.  
+❌ **No puedes** copiarlo, distribuirlo ni presentarlo como tuyo.  
+❌ **No puedes** usarlo con fines comerciales sin permiso expreso del autor.
+
+Consulta el archivo [LICENSE](./LICENSE) para más detalles.
+
